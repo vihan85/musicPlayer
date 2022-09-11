@@ -15,7 +15,7 @@
 const $ = document.querySelector.bind(document);
 const $$ = document.querySelectorAll.bind(document);
 var nameTitle = $('.name-title');
-var audio =$('#audio');
+var audio = $('#audio');
 var btnPlay = $('.btn-toggle-play');
 var btnPlayer = $('.player');
 var cdThumb = $('.cd-thumb');
@@ -60,21 +60,21 @@ const app = {
             img: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR0zANPoWHH636U0D4a6WyH5IRjBGMUjwh9yA&usqp=CAU'
 
         }
-    ], 
-    curentSong : 0,
-    getCurentSong: function() {
+    ],
+    curentSong: 0,
+    getCurentSong: function () {
         return this.curentSong
     },
-    setCurentSong: function(value) {
+    setCurentSong: function (value) {
         var songsLenght = this.songs.length
-        if(value >= songsLenght | value < 0) {
+        if (value >= songsLenght | value < 0) {
             value = 0
         }
         return this.curentSong = value
     },
-    render: function() {
+    render: function () {
         let songBlock = $('.playlist')
-        let html = this.songs.map(function (song ,index) {
+        let html = this.songs.map(function (song, index) {
             return `
             <div class="song" data-url=${song.path}>
                 <div class="thumb" data-index=${index}  data-img=${song.img} style="background-image: url(${song.img})">
@@ -96,26 +96,22 @@ const app = {
     // 1 thay đổi tên và ảnh
     // 2 load bài hát đầu tiên truyền link vào tag src
     // click vào nút play thì phát nhạc
-    
-    loadingSong: function() {
+
+    loadingSong: function () {
         let curentSong = this.getCurentSong()
         nameTitle.innerText = this.songs[curentSong].name
         cdThumb.style.backgroundImage = 'url' + '(' + `${this.songs[curentSong].img}` + ')'
-         audio.innerHTML = `<source src=${this.songs[curentSong].path} type="audio/mpeg">`
+        audio.innerHTML = `<source src=${this.songs[curentSong].path} type="audio/mpeg">`
         // audio.src = this.songs[curentSong].path;
         if (initSong !== true) {
             audio.load()
-            // var duration = audio.duration
-            // console.log(duration);
-            audio.addEventListener('loadedmetadata', function(e) {
-                // console.log(e);
-            });
+            audio.load();
             this.musicPlay(audio)
         }
     },
 
-//  hàm xử lý sự kiện 
-    handleEvent: function() {
+    //  hàm xử lý sự kiện 
+    handleEvent: function () {
         // lắng nghe sự kiện trên cả trang
         // bắt sự kiện scroll
         // bắt sự kiện crollUp crollDown
@@ -146,12 +142,12 @@ const app = {
                 var path = this.dataset.url;
                 var imgurl = this.querySelector('.thumb').dataset.img;
                 var nameTitle = $('.name-title');
-                var audio =$('#audio');
+                var audio = $('#audio');
                 nameTitle.innerText = name;
                 cdThumb.style.backgroundImage = 'url' + '(' + `${imgurl}` + ')';
                 audio.innerHTML = `<source src=${path} type="audio/mpeg">`;
                 var duration = audio.duration;
-                this.setAttribute('data-active','true')
+                this.setAttribute('data-active', 'true')
                 audio.load();
                 that.musicPlay(audio, duration);
             });
@@ -162,7 +158,7 @@ const app = {
             var curentSong = this.getCurentSong();
             var index = curentSong + 1
             this.setCurentSong(index)
-            var newSong = this.setCurentSong(index)
+            var newSong = this.setCurentSong(index);
             this.loadingSong(newSong)
         }
 
@@ -179,37 +175,37 @@ const app = {
         // khi nut seek đậm là đang chế độ random click vào sẽ đổi bài ngẫu nhiên
         // khi seek tắt chế độ bth
         let btnRamdon = $('.btn-random');
-        
+
         btnRamdon.onclick = () => {
             let that = this;
             let acctiveRandom = btnRamdon.classList.contains('btn-random--acctive')
-            if(!acctiveRandom) {
+            if (!acctiveRandom) {
                 btnRamdon.classList.add('btn-random--acctive');
                 var songsLenght = this.songs.length
                 btnNext.onclick = () => {
-                    var ramdonmSong = Math.floor(Math.random () *songsLenght )
+                    var ramdonmSong = Math.floor(Math.random() * songsLenght)
                     that.curentSong = ramdonmSong
                     that.loadingSong()
                 }
                 btnPrev.onclick = () => {
-                    var ramdonmSong = Math.floor(Math.random () *songsLenght )
+                    var ramdonmSong = Math.floor(Math.random() * songsLenght)
                     that.curentSong = ramdonmSong
                     that.loadingSong()
                 }
-            }else {
-                console.log('test')
+            } else {
                 btnRamdon.classList.remove('btn-random--acctive')
-               
+
             }
         }
         // btn preload
-        let btnRepest = $('.btn-repeat')
-        btnRepest.onclick = () => {
+        let btnRepeat = $('.btn-repeat')
+        btnRepeat.onclick = () => {
             audio.curentTime = 0;
-            audio.load()
-            audio.play()
+            $('.progress').setAttribute('value', 0);
+            audio.load();
+            audio.play();
         }
-        
+
     },
     // them key cho bai hat dau tien
     // kiem tra the chua data neu laf true thi lay ra bai hat 
@@ -218,49 +214,53 @@ const app = {
     // loop .song de xac dinh bai hat hien tai đang hat
     // lay bai hat tiep theo
 
-    musicPlay: function(audio, duration) {
+    musicPlay: function (audio, duration) {
         audio.play();
+        duration = 297;
+        audio.addEventListener('loadedmetadata', function (e) {
+            duration = e.target.duration;
+        });
         var fullTime = audio.duration ? audio.duration : duration;
         var round = (fullTime * 360) / 5;
         cdThumb.classList.remove('stop-animation');
         cdThumb.style.animationDuration = fullTime + "s";
-        cdThumb.style.setProperty('--change',  round + "deg");
+        cdThumb.style.setProperty('--change', round + "deg");
 
         if (!btnPlayer.classList.contains('playing')) {
             btnPlayer.classList.add('playing');
         }
     },
 
-    musicPause: function() {
+    musicPause: function () {
         audio.pause();
         cdThumb.classList.add('stop-animation')
         btnPlayer.classList.remove('playing');
     },
 
-    clickBtnPlay: function() {
+    clickBtnPlay: function () {
         btnPlay.addEventListener('click', () => {
             initSong = false;
-            if(audio.paused) {
+            if (audio.paused) {
                 this.musicPlay(audio);
             } else {
                 this.musicPause(audio);
-            }   
+            }
         });
     },
-    progress: function() {
-
-        audio.ontimeupdate = function() {
-            let duration = audio.duration
-            let curentTime = audio.currentTime
-            $('.progress').setAttribute('max', duration )
-            $('.progress').setAttribute('value', curentTime )
+    progress: function () {
+        audio.ontimeupdate = function () {
+            let duration = audio.duration;
+            let curentTime = audio.currentTime;
+            $('.progress').setAttribute('max', duration);
+            $('.progress').setAttribute('value', curentTime);
         };
-        $('.progress').onchange = function(e) {
-            console.log(audio.currentTime = this.value);
+        $('.progress').onchange = function (e) {
+            audio.currentTime = this.value;
+            $('.progress').setAttribute('value', this.value);
         };
     },
-    
-    start: function() {
+
+    start: function () {
         this.render();
         this.loadingSong();
         this.handleEvent();
