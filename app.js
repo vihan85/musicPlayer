@@ -105,11 +105,7 @@ const app = {
         // audio.src = this.songs[curentSong].path;
         if (initSong !== true) {
             audio.load()
-            // var duration = audio.duration
-            // console.log(duration);
-            audio.addEventListener('loadedmetadata', function (e) {
-                // console.log(e);
-            });
+            audio.load();
             this.musicPlay(audio)
         }
     },
@@ -163,7 +159,6 @@ const app = {
             var index = curentSong + 1
             this.setCurentSong(index)
             var newSong = this.setCurentSong(index);
-            console.log('test');
             this.loadingSong(newSong)
         }
 
@@ -198,17 +193,17 @@ const app = {
                     that.loadingSong()
                 }
             } else {
-                console.log('test')
                 btnRamdon.classList.remove('btn-random--acctive')
 
             }
         }
         // btn preload
-        let btnRepest = $('.btn-repeat')
-        btnRepest.onclick = () => {
+        let btnRepeat = $('.btn-repeat')
+        btnRepeat.onclick = () => {
             audio.curentTime = 0;
-            audio.load()
-            audio.play()
+            $('.progress').setAttribute('value', 0);
+            audio.load();
+            audio.play();
         }
 
     },
@@ -221,6 +216,10 @@ const app = {
 
     musicPlay: function (audio, duration) {
         audio.play();
+        duration = 297;
+        audio.addEventListener('loadedmetadata', function (e) {
+            duration = e.target.duration;
+        });
         var fullTime = audio.duration ? audio.duration : duration;
         var round = (fullTime * 360) / 5;
         cdThumb.classList.remove('stop-animation');
@@ -249,15 +248,15 @@ const app = {
         });
     },
     progress: function () {
-
         audio.ontimeupdate = function () {
-            let duration = audio.duration
-            let curentTime = audio.currentTime
-            $('.progress').setAttribute('max', duration)
-            $('.progress').setAttribute('value', curentTime)
+            let duration = audio.duration;
+            let curentTime = audio.currentTime;
+            $('.progress').setAttribute('max', duration);
+            $('.progress').setAttribute('value', curentTime);
         };
         $('.progress').onchange = function (e) {
-            console.log(audio.currentTime = this.value);
+            audio.currentTime = this.value;
+            $('.progress').setAttribute('value', this.value);
         };
     },
 
